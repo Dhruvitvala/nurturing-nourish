@@ -123,8 +123,8 @@ const Index = () => {
             <div className="lg:w-1/2 animate-fade-in" style={{ animationDelay: '300ms' }}>
               <div className="relative rounded-2xl overflow-hidden shadow-xl">
                 <img 
-                  src="https://images.unsplash.com/photo-1580676426783-c6e508e3702c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
-                  alt="AI nutrition analysis" 
+                  src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                  alt="AI-generated personalized nutrition plan" 
                   className="w-full h-auto object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-tr from-soft-400/30 to-transparent"></div>
