@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Apple } from 'lucide-react';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -53,9 +53,9 @@ const Navbar = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center">
             <div className="w-10 h-10 rounded-full bg-gradient-to-r from-nurturing-400 to-nurturing-600 flex items-center justify-center shadow-sm">
-              <span className="text-white font-bold text-lg">NN</span>
+              <Apple className="text-white" size={20} />
             </div>
-            <span className="ml-2 text-xl font-semibold text-nurturing-900">NourishAI</span>
+            <span className="ml-2 text-xl font-semibold text-nurturing-900">NutriGenie</span>
           </Link>
           
           {/* Desktop Navigation */}

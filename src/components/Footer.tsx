@@ -1,6 +1,6 @@
 
 import { Link } from 'react-router-dom';
-import { Heart, Instagram, Facebook, Twitter, Mail, PhoneCall } from 'lucide-react';
+import { Heart, Instagram, Facebook, Twitter, Mail, PhoneCall, Apple } from 'lucide-react';
 
 const Footer = () => {
   return (
@@ -11,9 +11,9 @@ const Footer = () => {
           <div className="space-y-4">
             <div className="flex items-center">
               <div className="w-10 h-10 rounded-full bg-gradient-to-r from-nurturing-400 to-nurturing-600 flex items-center justify-center shadow-sm">
-                <span className="text-white font-bold text-lg">NN</span>
+                <Apple className="text-white" size={20} />
               </div>
-              <span className="ml-2 text-xl font-semibold text-nurturing-900">NourishAI</span>
+              <span className="ml-2 text-xl font-semibold text-nurturing-900">NutriGenie</span>
             </div>
             <p className="text-nurturing-700 mt-4">
               AI-driven nutritional planning for mothers and children, making healthy eating accessible and personalized.
@@ -88,8 +88,8 @@ const Footer = () => {
               </li>
               <li className="flex items-center">
                 <Mail size={18} className="text-nurturing-500 mr-2" />
-                <a href="mailto:support@nourishai.org" className="text-nurturing-700 hover:text-nurturing-500 transition-colors">
-                  support@nourishai.org
+                <a href="mailto:support@nutrigenie.org" className="text-nurturing-700 hover:text-nurturing-500 transition-colors">
+                  support@nutrigenie.org
                 </a>
               </li>
               <li className="mt-4">
@@ -104,7 +104,7 @@ const Footer = () => {
         {/* Bottom Section */}
         <div className="border-t border-nurturing-100 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-nurturing-600 text-sm">
-            © 2023 NourishAI. All rights reserved.
+            © 2023 NutriGenie. All rights reserved.
           </p>
           <div className="flex space-x-6 mt-4 md:mt-0">
             <a href="#" className="text-nurturing-600 hover:text-nurturing-700 text-sm transition-colors">Privacy Policy</a>

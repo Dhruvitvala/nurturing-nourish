@@ -20,7 +20,7 @@ const Hero = () => {
               <span className="text-gradient">Nourish</span> the Future with <span className="text-gradient">Personalized Nutrition</span>
             </h1>
             <p className="body-large text-nurturing-700 mb-8 animate-slide-in-bottom" style={{ animationDelay: '500ms' }}>
-              Revolutionizing maternal and child nutrition with AI-driven personalized meal plans, real-time monitoring, and community support tailored to your unique needs.
+              NutriGenie revolutionizes maternal and child nutrition with AI-driven personalized meal plans, real-time monitoring, and community support tailored to your unique needs.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 animate-slide-in-bottom" style={{ animationDelay: '600ms' }}>
               <Link to="/diet-planner" className="btn-primary flex items-center justify-center gap-2">
