@@ -1,8 +1,14 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { ArrowUp, User, Weight, Activity, Ruler, Apple, Bookmark } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Form, FormField, FormItem, FormLabel, FormControl } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { useToast } from '@/hooks/use-toast';
+import { useForm } from 'react-hook-form';
 import { 
   ChartContainer, 
   ChartTooltip, 
@@ -30,6 +36,16 @@ interface UserData {
     calcium: number;
     folate: number;
     omega3: number;
+  };
+  dietaryPreferences?: {
+    preferences: string;
+    allergies: string;
+    restrictions: string;
+  };
+  nutritionalGoals?: {
+    primaryGoals: string;
+    focusAreas: string;
+    specificConcerns: string;
   };
 }
 
@@ -62,9 +78,54 @@ const chartConfig = {
   },
 };
 
+interface ProfileFormValues {
+  name: string;
+  stage: string;
+  trimester: string;
+  weight: number;
+  height: number;
+  preferences: string;
+  allergies: string;
+  restrictions: string;
+  primaryGoals: string;
+  focusAreas: string;
+  specificConcerns: string;
+}
+
 const DashboardProfile: React.FC<DashboardProfileProps> = ({ userData }) => {
   // Determine the current week data point based on trimester
   const currentWeek = userData.profileType === 'pregnancy' ? 18 : 0;
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const { toast } = useToast();
+  
+  const form = useForm<ProfileFormValues>({
+    defaultValues: {
+      name: userData.name,
+      stage: userData.stage,
+      trimester: userData.trimester,
+      weight: userData.keyMetrics.weight,
+      height: userData.keyMetrics.height,
+      preferences: userData.dietaryPreferences?.preferences || 'Vegetarian, Mediterranean diet',
+      allergies: userData.dietaryPreferences?.allergies || 'Lactose intolerance, Tree nuts',
+      restrictions: userData.dietaryPreferences?.restrictions || 'No alcohol, Limited caffeine',
+      primaryGoals: userData.nutritionalGoals?.primaryGoals || 'Healthy pregnancy weight gain, Optimize fetal development',
+      focusAreas: userData.nutritionalGoals?.focusAreas || 'Increase iron intake, Maintain calcium levels',
+      specificConcerns: userData.nutritionalGoals?.specificConcerns || 'Morning sickness management, Heartburn reduction',
+    }
+  });
+
+  const onSubmit = (values: ProfileFormValues) => {
+    console.log('Profile updated:', values);
+    
+    // In a real app, you would make an API call to update the profile
+    // For now, just show a success toast
+    toast({
+      title: "Profile updated",
+      description: "Your profile has been successfully updated.",
+    });
+    
+    setIsDialogOpen(false);
+  };
   
   return (
     <div className="space-y-6">
@@ -73,7 +134,7 @@ const DashboardProfile: React.FC<DashboardProfileProps> = ({ userData }) => {
           <h1 className="text-2xl md:text-3xl font-bold text-nurturing-900">Hello, {userData.name}</h1>
           <p className="text-nurturing-600">{userData.stage} • {userData.trimester}</p>
         </div>
-        <Button>
+        <Button onClick={() => setIsDialogOpen(true)}>
           Edit Profile
         </Button>
       </div>
@@ -180,15 +241,15 @@ const DashboardProfile: React.FC<DashboardProfileProps> = ({ userData }) => {
             <div className="space-y-2">
               <div>
                 <h4 className="font-medium text-sm text-nurturing-700">Preferences</h4>
-                <p className="text-nurturing-600">Vegetarian, Mediterranean diet</p>
+                <p className="text-nurturing-600">{form.getValues().preferences}</p>
               </div>
               <div>
                 <h4 className="font-medium text-sm text-nurturing-700">Allergies & Intolerances</h4>
-                <p className="text-nurturing-600">Lactose intolerance, Tree nuts</p>
+                <p className="text-nurturing-600">{form.getValues().allergies}</p>
               </div>
               <div>
                 <h4 className="font-medium text-sm text-nurturing-700">Dietary Restrictions</h4>
-                <p className="text-nurturing-600">No alcohol, Limited caffeine</p>
+                <p className="text-nurturing-600">{form.getValues().restrictions}</p>
               </div>
             </div>
           </CardContent>
@@ -205,20 +266,199 @@ const DashboardProfile: React.FC<DashboardProfileProps> = ({ userData }) => {
             <div className="space-y-2">
               <div>
                 <h4 className="font-medium text-sm text-nurturing-700">Primary Goals</h4>
-                <p className="text-nurturing-600">Healthy pregnancy weight gain, Optimize fetal development</p>
+                <p className="text-nurturing-600">{form.getValues().primaryGoals}</p>
               </div>
               <div>
                 <h4 className="font-medium text-sm text-nurturing-700">Focus Areas</h4>
-                <p className="text-nurturing-600">Increase iron intake, Maintain calcium levels</p>
+                <p className="text-nurturing-600">{form.getValues().focusAreas}</p>
               </div>
               <div>
                 <h4 className="font-medium text-sm text-nurturing-700">Specific Concerns</h4>
-                <p className="text-nurturing-600">Morning sickness management, Heartburn reduction</p>
+                <p className="text-nurturing-600">{form.getValues().specificConcerns}</p>
               </div>
             </div>
           </CardContent>
         </Card>
       </div>
+
+      {/* Edit Profile Dialog */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Edit Profile</DialogTitle>
+          </DialogHeader>
+          
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-4">
+                  <h3 className="font-medium text-nurturing-800">Personal Information</h3>
+                  
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Name</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Your name" {...field} />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="stage"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Stage</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Pregnancy, Postpartum, etc." {...field} />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="trimester"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Trimester/Period</FormLabel>
+                        <FormControl>
+                          <Input placeholder="First Trimester, 6 months postpartum, etc." {...field} />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="weight"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Weight (kg)</FormLabel>
+                          <FormControl>
+                            <Input type="number" step="0.1" {...field} />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={form.control}
+                      name="height"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Height (cm)</FormLabel>
+                          <FormControl>
+                            <Input type="number" step="0.1" {...field} />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </div>
+                
+                <div className="space-y-4">
+                  <h3 className="font-medium text-nurturing-800">Dietary Information</h3>
+                  
+                  <FormField
+                    control={form.control}
+                    name="preferences"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Dietary Preferences</FormLabel>
+                        <FormControl>
+                          <Textarea placeholder="Vegetarian, Mediterranean diet, etc." {...field} />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="allergies"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Allergies & Intolerances</FormLabel>
+                        <FormControl>
+                          <Textarea placeholder="Lactose intolerance, tree nuts, etc." {...field} />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="restrictions"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Dietary Restrictions</FormLabel>
+                        <FormControl>
+                          <Textarea placeholder="No alcohol, limited caffeine, etc." {...field} />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+              
+              <div className="space-y-4">
+                <h3 className="font-medium text-nurturing-800">Nutritional Goals</h3>
+                
+                <FormField
+                  control={form.control}
+                  name="primaryGoals"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Primary Goals</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Healthy pregnancy weight gain, optimize fetal development, etc." {...field} />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="focusAreas"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Focus Areas</FormLabel>
+                        <FormControl>
+                          <Textarea placeholder="Increase iron intake, maintain calcium levels, etc." {...field} />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="specificConcerns"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Specific Concerns</FormLabel>
+                        <FormControl>
+                          <Textarea placeholder="Morning sickness management, heartburn reduction, etc." {...field} />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+              
+              <DialogFooter>
+                <Button variant="outline" type="button" onClick={() => setIsDialogOpen(false)}>Cancel</Button>
+                <Button type="submit">Save Changes</Button>
+              </DialogFooter>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

@@ -51,6 +51,16 @@ const Dashboard = () => {
       calcium: 90,
       folate: 95,
       omega3: 65,
+    },
+    dietaryPreferences: {
+      preferences: "Vegetarian, Mediterranean diet",
+      allergies: "Lactose intolerance, Tree nuts",
+      restrictions: "No alcohol, Limited caffeine"
+    },
+    nutritionalGoals: {
+      primaryGoals: "Healthy pregnancy weight gain, Optimize fetal development",
+      focusAreas: "Increase iron intake, Maintain calcium levels",
+      specificConcerns: "Morning sickness management, Heartburn reduction"
     }
   };
 
