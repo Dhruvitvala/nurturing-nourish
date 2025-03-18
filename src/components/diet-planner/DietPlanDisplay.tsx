@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { DietPlan } from '@/utils/dietPlanGenerator';
 
 interface Meal {
   name: string;
@@ -34,26 +35,6 @@ interface DailyPlan {
     dinner: Meal;
     eveningSnack?: Meal;
   };
-}
-
-interface DietPlan {
-  userProfile: {
-    age: number;
-    gender: string;
-    weight: number;
-    height: number;
-    activityLevel: string;
-    fitnessGoal: string;
-  };
-  calorieTarget: number;
-  macroBreakdown: {
-    protein: number; // Percentage
-    carbs: number; // Percentage
-    fats: number; // Percentage
-  };
-  dailyPlans: DailyPlan[];
-  recommendations: string[];
-  shoppingList: Record<string, string[]>;
 }
 
 interface DietPlanDisplayProps {
@@ -87,9 +68,9 @@ const DietPlanDisplay: React.FC<DietPlanDisplayProps> = ({ dietPlan, onBack }) =
 
       <Card className="mb-8">
         <CardHeader>
-          <CardTitle className="text-2xl text-nurturing-700">Your Personalized Diet Plan</CardTitle>
+          <CardTitle className="text-2xl text-nurturing-700">Your Personalized Nutrition Plan</CardTitle>
           <CardDescription>
-            Based on your profile, we've created a nutrition plan tailored to your needs
+            Based on your profile, we've created a nutrition plan tailored to your specific needs
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -116,9 +97,11 @@ const DietPlanDisplay: React.FC<DietPlanDisplayProps> = ({ dietPlan, onBack }) =
               </div>
             </div>
             <div className="bg-nurturing-50 p-4 rounded-lg">
-              <h3 className="font-medium text-nurturing-700 mb-2">Fitness Goal</h3>
+              <h3 className="font-medium text-nurturing-700 mb-2">Profile Type</h3>
               <p className="text-xl font-semibold text-nurturing-900 capitalize">
-                {dietPlan.userProfile.fitnessGoal.replace('_', ' ')}
+                {dietPlan.userProfile.profileType}
+                {dietPlan.userProfile.pregnancyTrimester && ` (${dietPlan.userProfile.pregnancyTrimester} trimester)`}
+                {dietPlan.userProfile.childAge && ` (${dietPlan.userProfile.childAge})`}
               </p>
             </div>
           </div>
@@ -235,7 +218,7 @@ const DietPlanDisplay: React.FC<DietPlanDisplayProps> = ({ dietPlan, onBack }) =
 
       <div className="mt-8 p-4 border border-yellow-300 bg-yellow-50 rounded-lg">
         <p className="text-sm text-yellow-800">
-          <strong>Disclaimer:</strong> This diet plan is generated based on the information you provided and general nutritional guidelines. It is not a substitute for professional medical advice. Please consult with a healthcare provider or registered dietitian before making significant changes to your diet, especially if you have any health conditions.
+          <strong>Disclaimer:</strong> This nutrition plan is generated based on the information you provided and general nutritional guidelines. It is not a substitute for professional medical advice. Please consult with a healthcare provider or registered dietitian before making significant changes to your diet, especially during pregnancy, lactation, or for young children.
         </p>
       </div>
     </div>

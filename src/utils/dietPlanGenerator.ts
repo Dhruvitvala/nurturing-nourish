@@ -1,4 +1,3 @@
-
 import { z } from 'zod';
 
 // Define the types
@@ -112,29 +111,22 @@ const calculateCalorieNeeds = (
 ): number => {
   switch (profileType) {
     case 'pregnant':
-      // Adjust based on trimester - guidelines recommend:
-      // 1st trimester: No additional calories
-      // 2nd trimester: +340 calories/day
-      // 3rd trimester: +450 calories/day
       if (trimester === 'first') return bmr;
       if (trimester === 'second') return bmr + 340;
       if (trimester === 'third') return bmr + 450;
       return bmr;
       
     case 'breastfeeding':
-      // Breastfeeding requires approximately 500 additional calories
       return bmr + 500;
       
     case 'child':
-      // Child calorie needs vary dramatically by age
-      if (childAge === '0-6m') return 550; // Average for formula-fed, breastfed may be lower
+      if (childAge === '0-6m') return 550;
       if (childAge === '6-12m') return 750;
       if (childAge === '1-3y') return 1000;
       if (childAge === '4-8y') return 1400;
-      return 1200; // Default
+      return 1200;
       
     case 'planning':
-      // No adjustment for pregnancy planning
       return bmr;
       
     default:
@@ -146,15 +138,12 @@ const calculateCalorieNeeds = (
 const calculateMacros = (profileType: string, trimester?: string, childAge?: string): { protein: number; carbs: number; fats: number } => {
   switch (profileType) {
     case 'pregnant':
-      // Higher protein needs during pregnancy
       return { protein: 25, carbs: 50, fats: 25 };
       
     case 'breastfeeding':
-      // Balanced macros for breastfeeding
       return { protein: 20, carbs: 50, fats: 30 };
       
     case 'child':
-      // Children need higher fat percentage, especially younger ones
       if (childAge === '0-6m' || childAge === '6-12m') {
         return { protein: 15, carbs: 40, fats: 45 };
       }
@@ -164,7 +153,6 @@ const calculateMacros = (profileType: string, trimester?: string, childAge?: str
       return { protein: 15, carbs: 50, fats: 35 };
       
     case 'planning':
-      // Balanced macros for pregnancy planning
       return { protein: 20, carbs: 50, fats: 30 };
       
     default:
@@ -294,7 +282,6 @@ const getKeyNutrients = (profileType: string, trimester?: string, childAge?: str
       ];
     }
   } else {
-    // Planning for pregnancy
     return [
       {
         name: "Folate/Folic Acid",
@@ -719,7 +706,6 @@ const generateSampleMeals = (profileType: string, trimester?: string, childAge?:
       };
     }
   } else {
-    // Planning for pregnancy
     return {
       planningBreakfast: {
         name: "Folate-Rich Breakfast Bowl",
@@ -828,7 +814,7 @@ const generateFoodSafetyGuidelines = (): string[] => {
     "Avoid unpasteurized dairy products and juices",
     "Limit high-mercury fish (shark, swordfish, king mackerel, tilefish)",
     "Reheat deli meats and hot dogs until steaming hot",
-    "Keep cold foods cold and hot foods hot",
+    "Keep cold foods cold and hot",
     "Wash hands and surfaces frequently during food preparation"
   ];
 };
@@ -897,30 +883,23 @@ const generateChildFeedingTips = (childAge?: string): string[] => {
 
 // Generate a full diet plan
 export const generateDietPlan = (userProfile: UserProfile): DietPlan => {
-  // Calculate calorie needs
   const bmr = calculateBMR(userProfile.weight, userProfile.height, userProfile.age);
   const calorieTarget = calculateCalorieNeeds(bmr, userProfile.profileType, userProfile.pregnancyTrimester, userProfile.childAge);
   
-  // Calculate macro breakdown
   const macros = calculateMacros(userProfile.profileType, userProfile.pregnancyTrimester, userProfile.childAge);
   
-  // Calculate macronutrient grams
-  const proteinGrams = Math.round((calorieTarget * (macros.protein / 100)) / 4); // 4 calories per gram of protein
-  const carbGrams = Math.round((calorieTarget * (macros.carbs / 100)) / 4); // 4 calories per gram of carbs
-  const fatGrams = Math.round((calorieTarget * (macros.fats / 100)) / 9); // 9 calories per gram of fat
+  const proteinGrams = Math.round((calorieTarget * (macros.protein / 100)) / 4);
+  const carbGrams = Math.round((calorieTarget * (macros.carbs / 100)) / 4);
+  const fatGrams = Math.round((calorieTarget * (macros.fats / 100)) / 9);
   
-  // Get key nutrients
   const keyNutrients = getKeyNutrients(userProfile.profileType, userProfile.pregnancyTrimester, userProfile.childAge);
   
-  // Generate sample meals
   const sampleMeals = generateSampleMeals(userProfile.profileType, userProfile.pregnancyTrimester, userProfile.childAge);
   
-  // Create daily plans
   const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
   
   let dailyPlans: DailyPlan[] = [];
   
-  // For infants 0-6 months, we only provide breastfeeding/formula guidance
   if (userProfile.profileType === 'child' && userProfile.childAge === '0-6m') {
     dailyPlans = daysOfWeek.map((day) => {
       return {
@@ -940,9 +919,7 @@ export const generateDietPlan = (userProfile: UserProfile): DietPlan => {
         }
       };
     });
-  } 
-  // For infants 6-12 months
-  else if (userProfile.profileType === 'child' && userProfile.childAge === '6-12m') {
+  } else if (userProfile.profileType === 'child' && userProfile.childAge === '6-12m') {
     dailyPlans = daysOfWeek.map((day) => {
       return {
         day,
@@ -961,9 +938,7 @@ export const generateDietPlan = (userProfile: UserProfile): DietPlan => {
         }
       };
     });
-  }
-  // For toddlers and children
-  else if (userProfile.profileType === 'child') {
+  } else if (userProfile.profileType === 'child') {
     dailyPlans = daysOfWeek.map((day) => {
       return {
         day,
@@ -981,11 +956,8 @@ export const generateDietPlan = (userProfile: UserProfile): DietPlan => {
         }
       };
     });
-  }
-  // For pregnant women
-  else if (userProfile.profileType === 'pregnant') {
+  } else if (userProfile.profileType === 'pregnant') {
     dailyPlans = daysOfWeek.map((day) => {
-      // Include evening snack every day for pregnant women
       return {
         day,
         totalCalories: calorieTarget,
@@ -1003,11 +975,8 @@ export const generateDietPlan = (userProfile: UserProfile): DietPlan => {
         }
       };
     });
-  }
-  // For breastfeeding mothers
-  else if (userProfile.profileType === 'breastfeeding') {
+  } else if (userProfile.profileType === 'breastfeeding') {
     dailyPlans = daysOfWeek.map((day) => {
-      // Include evening snack every day for breastfeeding mothers
       return {
         day,
         totalCalories: calorieTarget,
@@ -1025,9 +994,7 @@ export const generateDietPlan = (userProfile: UserProfile): DietPlan => {
         }
       };
     });
-  }
-  // For pregnancy planning
-  else {
+  } else {
     dailyPlans = daysOfWeek.map((day) => {
       return {
         day,
@@ -1047,7 +1014,6 @@ export const generateDietPlan = (userProfile: UserProfile): DietPlan => {
     });
   }
   
-  // Generate recommendations based on profile type
   let recommendations: string[] = [
     "Stay hydrated by drinking plenty of water throughout the day",
     "Focus on whole, nutrient-dense foods as much as possible",
@@ -1055,7 +1021,6 @@ export const generateDietPlan = (userProfile: UserProfile): DietPlan => {
     "Listen to your body's hunger and fullness cues"
   ];
   
-  // Generate conditional guidelines and tips
   let foodSafetyGuidelines: string[] | undefined;
   let breastfeedingSupport: string[] | undefined;
   let childFeedingTips: string[] | undefined;
@@ -1093,8 +1058,7 @@ export const generateDietPlan = (userProfile: UserProfile): DietPlan => {
     ];
   }
   
-  // Generate shopping list based on meals
-  const commonShoppingItems = {
+  let shoppingList: Record<string, string[]> = {
     "fruits": [
       "Berries (strawberries, blueberries, raspberries)",
       "Bananas",
@@ -1141,13 +1105,10 @@ export const generateDietPlan = (userProfile: UserProfile): DietPlan => {
     ]
   };
   
-  // Add profile-specific items
-  let shoppingList = {...commonShoppingItems};
-  
   if (userProfile.profileType === 'pregnant' || userProfile.profileType === 'planning') {
     shoppingList = {
       ...shoppingList,
-      "pregnancy-supporting foods": [
+      "pregnancy foods": [
         "Fortified cereals (with folic acid and iron)",
         "Molasses (iron-rich)",
         "Prunes and dried fruits (iron and fiber)",
@@ -1160,7 +1121,7 @@ export const generateDietPlan = (userProfile: UserProfile): DietPlan => {
   if (userProfile.profileType === 'breastfeeding') {
     shoppingList = {
       ...shoppingList,
-      "lactation-supporting foods": [
+      "lactation foods": [
         "Oats (regular or steel-cut)",
         "Flaxseed (ground)",
         "Brewer's yeast",
@@ -1174,7 +1135,7 @@ export const generateDietPlan = (userProfile: UserProfile): DietPlan => {
   if (userProfile.profileType === 'child' && userProfile.childAge === '6-12m') {
     shoppingList = {
       ...shoppingList,
-      "infant foods": [
+      "baby foods": [
         "Iron-fortified infant cereals",
         "Soft fruits for pureeing",
         "Vegetables for pureeing",
@@ -1185,7 +1146,7 @@ export const generateDietPlan = (userProfile: UserProfile): DietPlan => {
   } else if (userProfile.profileType === 'child') {
     shoppingList = {
       ...shoppingList,
-      "child-friendly foods": [
+      "child foods": [
         "Whole milk (for ages 1-2)",
         "Finger-friendly fruits and vegetables",
         "Age-appropriate snacks",
