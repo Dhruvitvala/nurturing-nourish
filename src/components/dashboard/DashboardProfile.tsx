@@ -132,6 +132,7 @@ const DashboardProfile: React.FC<DashboardProfileProps> = ({ userData }) => {
         <CardContent>
           <div className="h-[300px]">
             <ChartContainer config={chartConfig}>
+              {/* Wrap the chart content in a single ResponsiveContainer element */}
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart
                   data={weightData}
@@ -159,9 +160,9 @@ const DashboardProfile: React.FC<DashboardProfileProps> = ({ userData }) => {
                     strokeDasharray="5 5"
                     strokeWidth={2}
                   />
+                  <ChartLegend content={<ChartLegendContent />} />
                 </LineChart>
               </ResponsiveContainer>
-              <ChartLegend content={<ChartLegendContent />} />
             </ChartContainer>
           </div>
         </CardContent>
