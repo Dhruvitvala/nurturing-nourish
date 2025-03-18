@@ -19,24 +19,24 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
-import { RadioGroup } from "@/components/ui/radio-group";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Slider } from "@/components/ui/slider";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 
 const userProfileSchema = z.object({
   // Basic metrics
-  age: z.coerce.number().min(18, { message: "Must be at least 18 years old" }).max(100),
-  gender: z.enum(["male", "female", "other"]),
+  age: z.coerce.number().min(18, { message: "Must be at least 18 years old" }).max(50),
   height: z.coerce.number().min(100, { message: "Height seems too low" }).max(250),
   weight: z.coerce.number().min(30, { message: "Weight seems too low" }).max(300),
   
+  // Profile type
+  profileType: z.enum(["pregnant", "breastfeeding", "child", "planning"]),
+  pregnancyTrimester: z.enum(["first", "second", "third"]).optional(),
+  childAge: z.enum(["0-6m", "6-12m", "1-3y", "4-8y"]).optional(),
+  
   // Health information
+  prePregnancyBMI: z.coerce.number().optional(),
   healthConditions: z.string().optional(),
   medications: z.string().optional(),
-  
-  // Activity and goals
-  activityLevel: z.enum(["sedentary", "light", "moderate", "active", "very_active"]),
-  fitnessGoal: z.enum(["weight_loss", "maintenance", "muscle_gain", "overall_health"]),
   
   // Dietary preferences
   dietaryRestrictions: z.string().optional(),
@@ -59,17 +59,20 @@ interface UserProfileFormProps {
 }
 
 export function UserProfileForm({ onSubmit }: UserProfileFormProps) {
+  const [profileType, setProfileType] = useState<string | undefined>(undefined);
+  
   const form = useForm<UserProfileFormValues>({
     resolver: zodResolver(userProfileSchema),
     defaultValues: {
       age: undefined,
-      gender: undefined,
       height: undefined,
       weight: undefined,
+      profileType: undefined,
+      pregnancyTrimester: undefined,
+      childAge: undefined,
+      prePregnancyBMI: undefined,
       healthConditions: "",
       medications: "",
-      activityLevel: undefined,
-      fitnessGoal: undefined,
       dietaryRestrictions: "",
       foodAllergies: "",
       cuisinePreferences: "",
@@ -84,19 +87,130 @@ export function UserProfileForm({ onSubmit }: UserProfileFormProps) {
     onSubmit(data);
   }
 
+  // Watch for profileType changes
+  const watchProfileType = form.watch("profileType");
+  if (watchProfileType !== profileType) {
+    setProfileType(watchProfileType);
+  }
+
   return (
     <div className="w-full max-w-3xl mx-auto bg-card rounded-lg border shadow-sm">
       <div className="flex flex-col space-y-1.5 p-6">
         <h3 className="text-2xl font-semibold leading-none tracking-tight text-nurturing-700">
-          Your Profile Information
+          Your Nutrition Profile
         </h3>
         <p className="text-sm text-muted-foreground">
-          Please provide detailed information to help create your personalized diet plan
+          Please provide detailed information to help create your personalized maternal or child nutrition plan
         </p>
       </div>
       <div className="p-6 pt-0">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
+            <div className="space-y-6">
+              <h3 className="text-lg font-medium text-nurturing-700">Profile Type</h3>
+              <FormField
+                control={form.control}
+                name="profileType"
+                render={({ field }) => (
+                  <FormItem className="space-y-3">
+                    <FormLabel>Who is this nutrition plan for?</FormLabel>
+                    <FormControl>
+                      <RadioGroup
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                        className="flex flex-col space-y-1"
+                      >
+                        <FormItem className="flex items-center space-x-3 space-y-0">
+                          <FormControl>
+                            <RadioGroupItem value="pregnant" />
+                          </FormControl>
+                          <FormLabel className="font-normal">
+                            Pregnant woman
+                          </FormLabel>
+                        </FormItem>
+                        <FormItem className="flex items-center space-x-3 space-y-0">
+                          <FormControl>
+                            <RadioGroupItem value="breastfeeding" />
+                          </FormControl>
+                          <FormLabel className="font-normal">
+                            Breastfeeding mother
+                          </FormLabel>
+                        </FormItem>
+                        <FormItem className="flex items-center space-x-3 space-y-0">
+                          <FormControl>
+                            <RadioGroupItem value="child" />
+                          </FormControl>
+                          <FormLabel className="font-normal">
+                            Child (0-8 years)
+                          </FormLabel>
+                        </FormItem>
+                        <FormItem className="flex items-center space-x-3 space-y-0">
+                          <FormControl>
+                            <RadioGroupItem value="planning" />
+                          </FormControl>
+                          <FormLabel className="font-normal">
+                            Planning for pregnancy
+                          </FormLabel>
+                        </FormItem>
+                      </RadioGroup>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            {profileType === "pregnant" && (
+              <FormField
+                control={form.control}
+                name="pregnancyTrimester"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Pregnancy Trimester</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select trimester" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="first">First trimester (weeks 1-12)</SelectItem>
+                        <SelectItem value="second">Second trimester (weeks 13-26)</SelectItem>
+                        <SelectItem value="third">Third trimester (weeks 27-40)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
+
+            {profileType === "child" && (
+              <FormField
+                control={form.control}
+                name="childAge"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Child's Age</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select age group" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="0-6m">0-6 months</SelectItem>
+                        <SelectItem value="6-12m">6-12 months</SelectItem>
+                        <SelectItem value="1-3y">1-3 years</SelectItem>
+                        <SelectItem value="4-8y">4-8 years</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
+
             <div className="space-y-6">
               <h3 className="text-lg font-medium text-nurturing-700">Basic Information</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -105,32 +219,10 @@ export function UserProfileForm({ onSubmit }: UserProfileFormProps) {
                   name="age"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Age</FormLabel>
+                      <FormLabel>Age (years)</FormLabel>
                       <FormControl>
-                        <Input type="number" placeholder="Age in years" {...field} />
+                        <Input type="number" placeholder="Your age in years" {...field} />
                       </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="gender"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Gender</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select gender" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="male">Male</SelectItem>
-                          <SelectItem value="female">Female</SelectItem>
-                          <SelectItem value="other">Other</SelectItem>
-                        </SelectContent>
-                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -153,7 +245,7 @@ export function UserProfileForm({ onSubmit }: UserProfileFormProps) {
                   name="weight"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Weight (kg)</FormLabel>
+                      <FormLabel>Current Weight (kg)</FormLabel>
                       <FormControl>
                         <Input type="number" placeholder="Weight in kilograms" {...field} />
                       </FormControl>
@@ -161,6 +253,21 @@ export function UserProfileForm({ onSubmit }: UserProfileFormProps) {
                     </FormItem>
                   )}
                 />
+                {(profileType === "pregnant" || profileType === "breastfeeding") && (
+                  <FormField
+                    control={form.control}
+                    name="prePregnancyBMI"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Pre-pregnancy BMI (if known)</FormLabel>
+                        <FormControl>
+                          <Input type="number" placeholder="Pre-pregnancy BMI" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
               </div>
             </div>
 
@@ -175,10 +282,13 @@ export function UserProfileForm({ onSubmit }: UserProfileFormProps) {
                       <FormLabel>Health Conditions</FormLabel>
                       <FormControl>
                         <Textarea
-                          placeholder="List any health conditions (e.g., diabetes, hypertension)"
+                          placeholder="List any health conditions (e.g., gestational diabetes, hypertension, etc.)"
                           {...field}
                         />
                       </FormControl>
+                      <FormDescription>
+                        Include any pregnancy-related conditions or general health issues
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -188,66 +298,13 @@ export function UserProfileForm({ onSubmit }: UserProfileFormProps) {
                   name="medications"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Medications</FormLabel>
+                      <FormLabel>Medications or Supplements</FormLabel>
                       <FormControl>
                         <Textarea
-                          placeholder="List any medications you're currently taking"
+                          placeholder="List any medications or supplements you're currently taking"
                           {...field}
                         />
                       </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </div>
-
-            <div className="space-y-6">
-              <h3 className="text-lg font-medium text-nurturing-700">Activity & Goals</h3>
-              <div className="grid grid-cols-1 gap-6">
-                <FormField
-                  control={form.control}
-                  name="activityLevel"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Activity Level</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select activity level" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="sedentary">Sedentary (little to no exercise)</SelectItem>
-                          <SelectItem value="light">Light activity (1-3 days per week)</SelectItem>
-                          <SelectItem value="moderate">Moderate activity (3-5 days per week)</SelectItem>
-                          <SelectItem value="active">Active (6-7 days per week)</SelectItem>
-                          <SelectItem value="very_active">Very active (twice per day)</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="fitnessGoal"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Fitness Goal</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select fitness goal" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="weight_loss">Weight Loss</SelectItem>
-                          <SelectItem value="maintenance">Maintenance</SelectItem>
-                          <SelectItem value="muscle_gain">Muscle Gain</SelectItem>
-                          <SelectItem value="overall_health">Overall Health Improvement</SelectItem>
-                        </SelectContent>
-                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -383,7 +440,7 @@ export function UserProfileForm({ onSubmit }: UserProfileFormProps) {
                   <FormLabel>Additional Information</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="Anything else you'd like us to know..."
+                      placeholder="Anything else you'd like us to know about your nutritional needs..."
                       {...field}
                     />
                   </FormControl>
@@ -393,7 +450,7 @@ export function UserProfileForm({ onSubmit }: UserProfileFormProps) {
             />
 
             <Button type="submit" className="bg-nurturing-600 hover:bg-nurturing-700 w-full md:w-auto">
-              Generate Diet Plan
+              Generate Nutrition Plan
               <ChevronRight className="ml-2 h-4 w-4" />
             </Button>
           </form>

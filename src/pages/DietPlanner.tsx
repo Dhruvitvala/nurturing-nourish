@@ -13,8 +13,8 @@ const DietPlanner = () => {
 
   const handleFormSubmit = (data: UserProfile) => {
     toast({
-      title: "Generating your diet plan...",
-      description: "Please wait while our AI creates your personalized plan.",
+      title: "Generating your nutrition plan...",
+      description: "Please wait while our AI creates your personalized maternal and child nutrition plan.",
     });
     
     // Simulate API call delay
@@ -24,8 +24,8 @@ const DietPlanner = () => {
       setStep('result');
       
       toast({
-        title: "Diet plan ready!",
-        description: "Your personalized nutrition plan has been created successfully.",
+        title: "Nutrition plan ready!",
+        description: "Your personalized maternal and child nutrition plan has been created successfully.",
       });
     }, 1500);
   };
@@ -42,11 +42,11 @@ const DietPlanner = () => {
             <Salad className="text-white" size={28} />
           </div>
           <h1 className="text-3xl md:text-4xl font-bold text-nurturing-900 mb-4">
-            Personalized Diet Planner
+            Maternal & Child Nutrition Planner
           </h1>
           <p className="text-nurturing-700 max-w-2xl mx-auto">
-            Our AI-powered diet planner creates customized meal plans based on your unique profile,
-            preferences, and goals. Fill out the form below to get started.
+            Our AI-powered nutrition planner creates customized meal plans for pregnant women,
+            new mothers, and young children based on your unique profile and nutritional needs.
           </p>
         </div>
 
@@ -56,9 +56,12 @@ const DietPlanner = () => {
               <div className="flex items-start gap-4 text-nurturing-800">
                 <Info className="h-6 w-6 text-nurturing-600 mt-0.5 flex-shrink-0" />
                 <div>
-                  <h3 className="font-medium mb-1">How it works</h3>
+                  <h3 className="font-medium mb-1">Expert Maternal & Child Nutrition</h3>
                   <p className="text-sm">
-                    Our AI analyzes your profile data, including age, weight, activity level, and dietary preferences to calculate your optimal calorie and macronutrient needs. Then it creates a personalized meal plan with delicious recipes that match your preferences and support your health goals.
+                    Our AI analyzes your profile data and creates personalized nutrition plans following the latest
+                    Dietary Guidelines for Americans 2020-2025. We provide evidence-based recommendations for
+                    pregnancy, lactation, and infant/child feeding, ensuring optimal nutrition during these
+                    critical life stages.
                   </p>
                 </div>
               </div>
