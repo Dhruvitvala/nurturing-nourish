@@ -1,6 +1,5 @@
-
 import { Link } from 'react-router-dom';
-import { Heart, Instagram, Facebook, Twitter, Mail, PhoneCall, Apple } from 'lucide-react';
+import { Heart, Instagram, Facebook, Twitter, Mail, PhoneCall, Salad } from 'lucide-react';
 
 const Footer = () => {
   return (
@@ -11,7 +10,7 @@ const Footer = () => {
           <div className="space-y-4">
             <div className="flex items-center">
               <div className="w-10 h-10 rounded-full bg-gradient-to-r from-nurturing-400 to-nurturing-600 flex items-center justify-center shadow-sm">
-                <Apple className="text-white" size={20} />
+                <Salad className="text-white" size={20} />
               </div>
               <span className="ml-2 text-xl font-semibold text-nurturing-900">NutriGenie</span>
             </div>
