@@ -21,7 +21,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup } from "@/components/ui/radio-group";
 import { Slider } from "@/components/ui/slider";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 
 const userProfileSchema = z.object({
   // Basic metrics
@@ -85,14 +85,16 @@ export function UserProfileForm({ onSubmit }: UserProfileFormProps) {
   }
 
   return (
-    <Card className="w-full max-w-3xl mx-auto">
-      <CardHeader>
-        <CardTitle className="text-nurturing-700 text-2xl">Your Profile Information</CardTitle>
-        <CardDescription>
+    <div className="w-full max-w-3xl mx-auto bg-card rounded-lg border shadow-sm">
+      <div className="flex flex-col space-y-1.5 p-6">
+        <h3 className="text-2xl font-semibold leading-none tracking-tight text-nurturing-700">
+          Your Profile Information
+        </h3>
+        <p className="text-sm text-muted-foreground">
           Please provide detailed information to help create your personalized diet plan
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
+        </p>
+      </div>
+      <div className="p-6 pt-0">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
             <div className="space-y-6">
@@ -339,7 +341,7 @@ export function UserProfileForm({ onSubmit }: UserProfileFormProps) {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="minimal">Minimal (quick meals, <15 min)</SelectItem>
+                          <SelectItem value="minimal">Minimal (quick meals, &lt;15 min)</SelectItem>
                           <SelectItem value="moderate">Moderate (30-45 min meals)</SelectItem>
                           <SelectItem value="extensive">Extensive (happy to cook complex meals)</SelectItem>
                         </SelectContent>
@@ -396,7 +398,7 @@ export function UserProfileForm({ onSubmit }: UserProfileFormProps) {
             </Button>
           </form>
         </Form>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }
