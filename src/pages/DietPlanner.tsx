@@ -1,10 +1,12 @@
 
 import { useState } from 'react';
-import { Salad, ArrowRight, Info } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Salad, ArrowRight, Info, LineChart } from 'lucide-react';
 import { UserProfileForm } from '@/components/diet-planner/UserProfileForm';
 import DietPlanDisplay from '@/components/diet-planner/DietPlanDisplay';
 import { UserProfile, generateDietPlan, DietPlan } from '@/utils/dietPlanGenerator';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
+import { Button } from '@/components/ui/button';
 
 const DietPlanner = () => {
   const [step, setStep] = useState<'form' | 'result'>('form');
@@ -48,6 +50,17 @@ const DietPlanner = () => {
             Our AI-powered nutrition planner creates customized meal plans for pregnant women,
             new mothers, and young children based on your unique profile and nutritional needs.
           </p>
+          
+          {/* Added Dashboard link button */}
+          <div className="mt-6">
+            <Link to="/dashboard">
+              <Button className="bg-soft-600 hover:bg-soft-700 text-white">
+                <LineChart className="mr-2 h-4 w-4" />
+                Go to Nutrition Dashboard
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </Link>
+          </div>
         </div>
 
         {step === 'form' && (
