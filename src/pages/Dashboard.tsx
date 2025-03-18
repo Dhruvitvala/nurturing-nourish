@@ -12,7 +12,7 @@ import {
   Menu
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { useMobile } from '@/hooks/use-mobile';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { Card, CardContent } from '@/components/ui/card';
 import DashboardProfile from '@/components/dashboard/DashboardProfile';
 import DashboardNutrition from '@/components/dashboard/DashboardNutrition';
@@ -25,7 +25,7 @@ import { Button } from '@/components/ui/button';
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState<'profile' | 'nutrition' | 'tracking' | 'resources' | 'support'>('profile');
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-  const isMobile = useMobile();
+  const isMobile = useIsMobile();
   const { toast } = useToast();
 
   const toggleSidebar = () => {
