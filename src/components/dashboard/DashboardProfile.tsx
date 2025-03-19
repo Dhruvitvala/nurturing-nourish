@@ -94,7 +94,7 @@ interface ProfileFormValues {
 
 const DashboardProfile: React.FC<DashboardProfileProps> = ({ userData }) => {
   // Determine the current week data point based on trimester
-  const currentWeek = userData.profileType === 'pregnancy' ? 18 : 0;
+  const currentWeek = userData.profileType === 'pregnancy' ? 16 : 0;
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { toast } = useToast();
   
@@ -183,43 +183,55 @@ const DashboardProfile: React.FC<DashboardProfileProps> = ({ userData }) => {
         </Card>
       </div>
 
-      {/* Adjusted weight trajectory section with more space and fixed positioning */}
-      <Card className="mb-12">
-        <CardHeader>
-          <CardTitle>Weight Trajectory</CardTitle>
+      {/* Weight Trajectory Card - Improved styling to match the image */}
+      <Card className="mb-6">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-xl font-bold text-nurturing-900">Weight Trajectory</CardTitle>
           <CardDescription>
             Your weight compared to recommended ranges
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {/* Increased height to give more space for the chart */}
-          <div className="h-[400px]">
+          <div className="h-[350px]">
             <ChartContainer config={chartConfig}>
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart
                   data={weightData}
                   margin={{ top: 20, right: 30, left: 20, bottom: 30 }}
                 >
-                  <CartesianGrid strokeDasharray="3 3" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
                   <XAxis 
                     dataKey="week" 
-                    label={{ value: 'Week', position: 'insideBottom', offset: -10 }}
+                    label={{ value: 'Week', position: 'insideBottom', offset: -5 }}
                     padding={{ left: 10, right: 10 }}
+                    stroke="#9ca3af"
+                    tick={{ fill: '#4b5563' }}
+                    domain={['dataMin', 'dataMax']}
                   />
                   <YAxis 
-                    label={{ value: 'Weight (kg)', angle: -90, position: 'insideLeft', offset: -5 }} 
-                    domain={['dataMin - 5', 'dataMax + 5']}
+                    label={{ value: 'Weight (kg)', angle: -90, position: 'insideLeft', offset: 5 }} 
+                    domain={[55, 80]}
+                    ticks={[56.2, 62.2, 68.2, 80]}
+                    stroke="#9ca3af"
+                    tick={{ fill: '#4b5563' }}
                   />
                   <ChartTooltip 
-                    content={<ChartTooltipContent />} 
+                    content={
+                      <ChartTooltipContent 
+                        formatter={(value, name) => {
+                          return [`${value} kg`, name === 'weight' ? 'Your Weight' : 'Recommended'];
+                        }}
+                      />
+                    }
                   />
                   <Line
                     type="monotone"
                     dataKey="weight"
                     name="weight"
                     stroke={chartConfig.weight.color}
-                    activeDot={{ r: 8 }}
-                    strokeWidth={2}
+                    strokeWidth={3}
+                    dot={{ r: 4, fill: chartConfig.weight.color, stroke: 'white', strokeWidth: 2 }}
+                    activeDot={{ r: 8, fill: chartConfig.weight.color, stroke: 'white', strokeWidth: 2 }}
                   />
                   <Line
                     type="monotone"
@@ -228,66 +240,72 @@ const DashboardProfile: React.FC<DashboardProfileProps> = ({ userData }) => {
                     stroke={chartConfig.recommended.color}
                     strokeDasharray="5 5"
                     strokeWidth={2}
-                  />
-                  <ChartLegend 
-                    verticalAlign="bottom" 
-                    height={36} 
-                    content={<ChartLegendContent />} 
+                    dot={{ r: 4, fill: chartConfig.recommended.color, stroke: 'white', strokeWidth: 2 }}
                   />
                 </LineChart>
               </ResponsiveContainer>
             </ChartContainer>
           </div>
+          <div className="flex justify-center gap-6 mt-4">
+            <div className="flex items-center">
+              <div className="w-3 h-3 rounded-full mr-2" style={{ backgroundColor: chartConfig.weight.color }}/>
+              <span className="text-sm text-gray-700">Your Weight</span>
+            </div>
+            <div className="flex items-center">
+              <div className="w-3 h-3 rounded-full mr-2" style={{ backgroundColor: chartConfig.recommended.color }}/>
+              <span className="text-sm text-gray-700">Recommended</span>
+            </div>
+          </div>
         </CardContent>
       </Card>
 
-      {/* Improved grid layout with more spacing between cards */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 pt-4">
+      {/* Dietary Preferences and Nutritional Goals - Improved layout and styling */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card className="h-full">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+          <CardHeader className="pb-2">
+            <CardTitle className="flex items-center gap-2 text-xl font-bold text-nurturing-900">
               <Apple className="h-5 w-5 text-nurturing-600" />
               Dietary Preferences
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-6">
+          <CardContent className="pt-2">
+            <div className="space-y-5">
               <div>
-                <h4 className="font-medium text-sm text-nurturing-700 mb-2">Preferences</h4>
-                <p className="text-nurturing-600">{form.getValues().preferences}</p>
+                <h4 className="font-medium text-sm text-nurturing-700 mb-1">Preferences</h4>
+                <p className="text-nurturing-800">{form.getValues().preferences}</p>
               </div>
               <div>
-                <h4 className="font-medium text-sm text-nurturing-700 mb-2">Allergies & Intolerances</h4>
-                <p className="text-nurturing-600">{form.getValues().allergies}</p>
+                <h4 className="font-medium text-sm text-nurturing-700 mb-1">Allergies & Intolerances</h4>
+                <p className="text-nurturing-800">{form.getValues().allergies}</p>
               </div>
               <div>
-                <h4 className="font-medium text-sm text-nurturing-700 mb-2">Dietary Restrictions</h4>
-                <p className="text-nurturing-600">{form.getValues().restrictions}</p>
+                <h4 className="font-medium text-sm text-nurturing-700 mb-1">Dietary Restrictions</h4>
+                <p className="text-nurturing-800">{form.getValues().restrictions}</p>
               </div>
             </div>
           </CardContent>
         </Card>
 
         <Card className="h-full">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+          <CardHeader className="pb-2">
+            <CardTitle className="flex items-center gap-2 text-xl font-bold text-nurturing-900">
               <Bookmark className="h-5 w-5 text-nurturing-600" />
               Nutritional Goals
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-6">
+          <CardContent className="pt-2">
+            <div className="space-y-5">
               <div>
-                <h4 className="font-medium text-sm text-nurturing-700 mb-2">Primary Goals</h4>
-                <p className="text-nurturing-600">{form.getValues().primaryGoals}</p>
+                <h4 className="font-medium text-sm text-nurturing-700 mb-1">Primary Goals</h4>
+                <p className="text-nurturing-800">{form.getValues().primaryGoals}</p>
               </div>
               <div>
-                <h4 className="font-medium text-sm text-nurturing-700 mb-2">Focus Areas</h4>
-                <p className="text-nurturing-600">{form.getValues().focusAreas}</p>
+                <h4 className="font-medium text-sm text-nurturing-700 mb-1">Focus Areas</h4>
+                <p className="text-nurturing-800">{form.getValues().focusAreas}</p>
               </div>
               <div>
-                <h4 className="font-medium text-sm text-nurturing-700 mb-2">Specific Concerns</h4>
-                <p className="text-nurturing-600">{form.getValues().specificConcerns}</p>
+                <h4 className="font-medium text-sm text-nurturing-700 mb-1">Specific Concerns</h4>
+                <p className="text-nurturing-800">{form.getValues().specificConcerns}</p>
               </div>
             </div>
           </CardContent>
