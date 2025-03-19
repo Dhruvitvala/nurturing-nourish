@@ -183,7 +183,8 @@ const DashboardProfile: React.FC<DashboardProfileProps> = ({ userData }) => {
         </Card>
       </div>
 
-      <Card>
+      {/* Increased height and added margin bottom to create more space */}
+      <Card className="mb-8">
         <CardHeader>
           <CardTitle>Weight Trajectory</CardTitle>
           <CardDescription>
@@ -191,13 +192,12 @@ const DashboardProfile: React.FC<DashboardProfileProps> = ({ userData }) => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="h-[300px]">
+          <div className="h-[350px]">
             <ChartContainer config={chartConfig}>
-              {/* Wrap the chart content in a single ResponsiveContainer element */}
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart
                   data={weightData}
-                  margin={{ top: 10, right: 30, left: 0, bottom: 10 }}
+                  margin={{ top: 20, right: 30, left: 0, bottom: 20 }}
                 >
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="week" label={{ value: 'Week', position: 'insideBottom', offset: -5 }} />
@@ -229,7 +229,8 @@ const DashboardProfile: React.FC<DashboardProfileProps> = ({ userData }) => {
         </CardContent>
       </Card>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {/* Changed to a better responsive grid layout with more space */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -238,7 +239,7 @@ const DashboardProfile: React.FC<DashboardProfileProps> = ({ userData }) => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-2">
+            <div className="space-y-4">
               <div>
                 <h4 className="font-medium text-sm text-nurturing-700">Preferences</h4>
                 <p className="text-nurturing-600">{form.getValues().preferences}</p>
@@ -263,7 +264,7 @@ const DashboardProfile: React.FC<DashboardProfileProps> = ({ userData }) => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-2">
+            <div className="space-y-4">
               <div>
                 <h4 className="font-medium text-sm text-nurturing-700">Primary Goals</h4>
                 <p className="text-nurturing-600">{form.getValues().primaryGoals}</p>
