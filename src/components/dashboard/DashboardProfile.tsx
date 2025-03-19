@@ -183,8 +183,8 @@ const DashboardProfile: React.FC<DashboardProfileProps> = ({ userData }) => {
         </Card>
       </div>
 
-      {/* Increased height and added margin bottom to create more space */}
-      <Card className="mb-8">
+      {/* Adjusted weight trajectory section with more space and fixed positioning */}
+      <Card className="mb-12">
         <CardHeader>
           <CardTitle>Weight Trajectory</CardTitle>
           <CardDescription>
@@ -192,16 +192,24 @@ const DashboardProfile: React.FC<DashboardProfileProps> = ({ userData }) => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="h-[350px]">
+          {/* Increased height to give more space for the chart */}
+          <div className="h-[400px]">
             <ChartContainer config={chartConfig}>
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart
                   data={weightData}
-                  margin={{ top: 20, right: 30, left: 0, bottom: 20 }}
+                  margin={{ top: 20, right: 30, left: 20, bottom: 30 }}
                 >
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="week" label={{ value: 'Week', position: 'insideBottom', offset: -5 }} />
-                  <YAxis label={{ value: 'Weight (kg)', angle: -90, position: 'insideLeft' }} />
+                  <XAxis 
+                    dataKey="week" 
+                    label={{ value: 'Week', position: 'insideBottom', offset: -10 }}
+                    padding={{ left: 10, right: 10 }}
+                  />
+                  <YAxis 
+                    label={{ value: 'Weight (kg)', angle: -90, position: 'insideLeft', offset: -5 }} 
+                    domain={['dataMin - 5', 'dataMax + 5']}
+                  />
                   <ChartTooltip 
                     content={<ChartTooltipContent />} 
                   />
@@ -221,7 +229,11 @@ const DashboardProfile: React.FC<DashboardProfileProps> = ({ userData }) => {
                     strokeDasharray="5 5"
                     strokeWidth={2}
                   />
-                  <ChartLegend content={<ChartLegendContent />} />
+                  <ChartLegend 
+                    verticalAlign="bottom" 
+                    height={36} 
+                    content={<ChartLegendContent />} 
+                  />
                 </LineChart>
               </ResponsiveContainer>
             </ChartContainer>
@@ -229,9 +241,9 @@ const DashboardProfile: React.FC<DashboardProfileProps> = ({ userData }) => {
         </CardContent>
       </Card>
 
-      {/* Changed to a better responsive grid layout with more space */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card>
+      {/* Improved grid layout with more spacing between cards */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 pt-4">
+        <Card className="h-full">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Apple className="h-5 w-5 text-nurturing-600" />
@@ -239,24 +251,24 @@ const DashboardProfile: React.FC<DashboardProfileProps> = ({ userData }) => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
+            <div className="space-y-6">
               <div>
-                <h4 className="font-medium text-sm text-nurturing-700">Preferences</h4>
+                <h4 className="font-medium text-sm text-nurturing-700 mb-2">Preferences</h4>
                 <p className="text-nurturing-600">{form.getValues().preferences}</p>
               </div>
               <div>
-                <h4 className="font-medium text-sm text-nurturing-700">Allergies & Intolerances</h4>
+                <h4 className="font-medium text-sm text-nurturing-700 mb-2">Allergies & Intolerances</h4>
                 <p className="text-nurturing-600">{form.getValues().allergies}</p>
               </div>
               <div>
-                <h4 className="font-medium text-sm text-nurturing-700">Dietary Restrictions</h4>
+                <h4 className="font-medium text-sm text-nurturing-700 mb-2">Dietary Restrictions</h4>
                 <p className="text-nurturing-600">{form.getValues().restrictions}</p>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="h-full">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Bookmark className="h-5 w-5 text-nurturing-600" />
@@ -264,17 +276,17 @@ const DashboardProfile: React.FC<DashboardProfileProps> = ({ userData }) => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
+            <div className="space-y-6">
               <div>
-                <h4 className="font-medium text-sm text-nurturing-700">Primary Goals</h4>
+                <h4 className="font-medium text-sm text-nurturing-700 mb-2">Primary Goals</h4>
                 <p className="text-nurturing-600">{form.getValues().primaryGoals}</p>
               </div>
               <div>
-                <h4 className="font-medium text-sm text-nurturing-700">Focus Areas</h4>
+                <h4 className="font-medium text-sm text-nurturing-700 mb-2">Focus Areas</h4>
                 <p className="text-nurturing-600">{form.getValues().focusAreas}</p>
               </div>
               <div>
-                <h4 className="font-medium text-sm text-nurturing-700">Specific Concerns</h4>
+                <h4 className="font-medium text-sm text-nurturing-700 mb-2">Specific Concerns</h4>
                 <p className="text-nurturing-600">{form.getValues().specificConcerns}</p>
               </div>
             </div>
